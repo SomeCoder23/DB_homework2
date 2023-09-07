@@ -1,5 +1,8 @@
 import { DataSource } from "typeorm"
 import { User } from "./entity/User.js";
+import { Role } from "./entity/Role.js";
+import { Profile } from "./entity/Profile.js";
+import { Permission } from "./entity/Permission.js";
 
 const dataSource = new DataSource({
     type: 'mysql',
@@ -8,7 +11,7 @@ const dataSource = new DataSource({
     username: 'root',
     password: '',
     database: 'hw_db',
-    entities: [User],
+    entities: [User, Role, Profile, Permission],
     synchronize: true
 }
 );
