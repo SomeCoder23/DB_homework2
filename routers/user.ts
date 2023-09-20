@@ -5,6 +5,9 @@ import { Profile } from '../db/entity/Profile';
 import { Permission } from '../db/entity/Permission';
 import { Role } from '../db/entity/Role';
 import { In } from 'typeorm';
+import { insertUser, login } from '../controllers/user.js';
+import { validateLogin, validateUser } from '../middleware/validation/user';
+
 
 const router = express.Router();
 
@@ -93,35 +96,28 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-  try {
-    const user = new User();
-    const profile = new Profile();
-    user.userName = req.body.userName;
-    user.password = req.body.password;
-    user.email = req.body.email;
-    profile.firstName = req.body.firstName;
-    profile.lastName = req.body.lastName;
-    profile.dateOfBirth = req.body.birthday;
-    user.profile = profile;
-    const roles = await Role.find({
-      where: {
-        id: In(req.body.roles)
-      }
+  
+  insertUser(req.body)
+    .then(result => {
+      res.status(201).send("User added Succesfully! :)");
+    })
+    .catch(err => {
+    console.error(err);
+    res.status(500).send("Something went wrong :(");
     });
-    user.roles = roles;
-    db.dataSource.transaction(async (transactionManager) => {
-      await transactionManager.save(profile);
-      await transactionManager.save(user);
-    }).then(() => {
-      res.send('User Created!');
-    }).catch(error => {
-      res.status(500).send("Something went wrong");
-    });
+});
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Something went wrong");
-  }
+router.post('/login', validateLogin, async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  login(username, password)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(401).send(err);
+    })
 });
 
 router.post('/addPermission', async (req, res) => {

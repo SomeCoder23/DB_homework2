@@ -16,6 +16,7 @@ export class User extends BaseEntity{
     @Column()
     email: string;
 
+
     @OneToOne(() => Profile, { cascade: true, eager: true })
     @JoinColumn()
     profile: Profile;
