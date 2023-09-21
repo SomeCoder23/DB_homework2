@@ -5,7 +5,7 @@ import { Profile } from '../db/entity/Profile';
 import { Permission } from '../db/entity/Permission';
 import { Role } from '../db/entity/Role';
 import { In } from 'typeorm';
-import { insertUser, login } from '../controllers/user.js';
+import { assignRole, insertUser, login } from '../controllers/user.js';
 import { validateLogin, validateUser } from '../middleware/validation/user';
 
 
@@ -163,25 +163,13 @@ router.post('/addRole', async (req, res) => {
 
 router.post('/assignRole/:id', async (req, res) => {
   const id = Number(req.params.id);
-  const user = await User.findOneBy({ id });
-  if (user) {
-    const roles = await Role.find({
-      where: {
-        id: In(req.body.roles)
-      }
-    });
-
-    user.roles = roles;
-    user.save().then((response) => {
-      res.status(201).send('User Updated :)');
-    }).catch(error => {
-      console.error(error);
-      res.status(500).send('Something went wrong');
-    });
-  } else {
-    res.status(404).send("User not found :( ");
-  }
-
+  assignRole(id, req.body.roles)
+    .then(result => {
+      res.status(201).send("Successfully assigned role to user :)");
+    })
+    .catch(err => {
+      res.status(401).send(err);
+    })
 });
 
 

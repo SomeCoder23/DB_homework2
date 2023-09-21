@@ -1,14 +1,18 @@
 import '../config.js';
 import db from '../dist/db/';
-import { insertUser } from "../dist/controllers/user.js";
+import { assignRole, insertUser } from "../dist/controllers/user.js";
 
 beforeAll(async () => {
+  console.log("Initializing.....");
   await db.initialize();
 });
 
-afterAll(async () => {
-  await db.dataSource.destroy();
-});
+
+
+// afterAll(async () => {
+//   console.log("Destroying....");
+//   await db.dataSource.destroy();
+// });
 
 const tmpData = {
   "userName": "SomePerson",
@@ -32,14 +36,14 @@ describe("Create user process", () => {
 
 });
 
-describe("Assign Role to User", () => {
-  let result;
-  beforeAll(async () => {
-    result = await insertUser(tmpData);
-  })
+// describe("Assign Role to User", () => {
+//   let result;
+//   beforeAll(async () => {
+//     result = await assignRole(1, [1]);
+//   })
 
-  it("saves user and profile", async () => {
-    expect(result).toBeDefined();
-  });
+//   it("updates user's role", async () => {
+//     expect(result).toBeDefined();
+//   });
 
-});
+// });

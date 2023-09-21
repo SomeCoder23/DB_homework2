@@ -12,7 +12,8 @@ const dataSource = new DataSource({
     password: '',
     database: 'hw_db',
     entities: [User, Role, Profile, Permission],
-    synchronize: true
+    synchronize: true,
+    logging: true
 }
 );
 

@@ -66,8 +66,25 @@ const login = async (userName: string, password: string) => {
       throw ("Invalid Username or password!");
     }
   }
+
+  const assignRole = async (id: number, rolesID : []) => {
+    const user = await User.findOneBy({ id });
+    if (user) {
+      const roles = await Role.find({
+        where: {
+          id: In(rolesID)
+        }
+      });
+  
+      user.roles = roles;
+      return user.save();
+    } else {
+      throw("User not found :( ");
+    }
+  }
   
   export{
     login,
-    insertUser
+    insertUser,
+    assignRole
   }
